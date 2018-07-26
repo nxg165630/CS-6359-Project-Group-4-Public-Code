@@ -1,0 +1,98 @@
+CREATE SCHEMA `cs_6359`;
+
+CREATE TABLE `cs_6359`.`Users` (
+  `Username` VARCHAR(45) NOT NULL,
+  `Password` VARCHAR(45) NOT NULL,
+  `Name` VARCHAR(45) NOT NULL,
+  `Usertype` TINYINT NOT NULL,
+  PRIMARY KEY (`Username`)
+);
+
+CREATE TABLE `cs_6359`.`TitleList`(
+`ISBN` VARCHAR(45) NOT NULL,
+`Title` VARCHAR(45) NOT NULL,
+`Author` VARCHAR(45) NOT NULL,
+`Genre` VARCHAR(45)  NULL,
+`Edition` VARCHAR(45)  NULL,
+PRIMARY KEY (`ISBN`)
+);
+
+CREATE TABLE `cs_6359`.`Collection` (
+  `inventoryID` VARCHAR(20) NOT NULL,
+  `ISBN` VARCHAR(45) NOT NULL,
+  `Status` TINYINT NULL,
+  PRIMARY KEY (`inventoryID`),
+  FOREIGN KEY (`ISBN`) REFERENCES `TitleList`(`ISBN`) ON UPDATE CASCADE
+);
+
+CREATE TABLE `cs_6359`.`Loan` (
+  `inventoryID` VARCHAR(20) NOT NULL,
+  `Renter` VARCHAR(45) NOT NULL,
+  `CheckOutDate` DATETIME NULL,
+  `ReturnByDate` DATETIME NULL,
+  PRIMARY KEY (`inventoryID`,`Renter`),
+  FOREIGN KEY (`inventoryID`) REFERENCES `Collection`(`inventoryID`) ON UPDATE CASCADE,
+  FOREIGN KEY (`Renter`) REFERENCES `Users`(`Username`) ON UPDATE CASCADE
+);
+
+CREATE TABLE `cs_6359`.`WaitList` (
+  `ISBN` VARCHAR(45) NOT NULL,
+  `Username` VARCHAR(45) NOT NULL,
+  `Position` INT NOT NULL,
+  `RentByDate` DATETIME NULL,
+  PRIMARY KEY (`ISBN`,`Username`),
+  FOREIGN KEY (`ISBN`) REFERENCES `TitleList`(`ISBN`) ON UPDATE CASCADE,
+  FOREIGN KEY (`Username`) REFERENCES `Users`(`Username`) ON UPDATE CASCADE
+);
+
+
+
+
+INSERT INTO `cs_6359`.`Users`
+ VALUES ('admin','admin','Admin','1'),
+		('admin1','admin','Admin1','1'),
+        ('admin2','admin','Admin2','1'),
+		('customer1','1234','Customer 1','0'),        
+		('customer2','1234','Customer 2','0'),        
+		('customer3','1234','Customer 3','0'),       
+		('customer4','1234','Customer 4','0'),
+        ('patron','patron','patron','0');
+
+        
+INSERT INTO `cs_6359`.`TitleList` 
+ VALUES	('111-111-11-1','testTitle','testAuthor','testCategory','testEdition'),
+		('111-111-11-2','Harry Potter','J. K. Rowling','Fantasy Fiction','1'),
+		('111-111-11-3','Twilight','Stephenie Meyer','fantasy','2'),
+		('111-111-11-4','testTitle1','testAuthor1','testCategory1','1'),
+		('111-111-11-5','testTitle2','testAuthor2','testCategory2','3'),
+		('111-111-11-6','testTitle3','testAuthor3','testCategory3','1'),
+('000-000-00-0','testCaseTitle','testCaseAuthor','testCaseCategory','0');
+
+
+INSERT INTO `cs_6359`.`collection` 
+ VALUES	('1','111-111-11-1','1'),
+		('2','111-111-11-1','1'),
+		('3','111-111-11-1','2'),
+        ('4','111-111-11-2','0'),
+        ('5','111-111-11-2','1'),
+        ('6','111-111-11-2','2'),
+        ('7','111-111-11-3','1'),
+        ('8','111-111-11-3','1'),
+        ('9','111-111-11-3','2'),
+        ('10','111-111-11-4','1'),
+        ('11','111-111-11-4','1'),
+        ('12','111-111-11-5','1'),
+        ('13','111-111-11-5','1'),
+        ('14','111-111-11-6','0'),
+        ('15','111-111-11-6','0'),
+('0','000-000-00-0','1');
+
+
+        
+INSERT INTO `cs_6359`.`Loan`
+ VALUES ('4','customer1','20180723','20180806'),
+		('14','customer1','20180702','20180716'),
+        ('15','customer4','20180703','20180716');
+
+INSERT INTO `cs_6359`.`waitlist`
+VALUES ('111-111-11-6','customer3','1',null);
